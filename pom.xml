@@ -4,13 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jmatrix.ed</groupId>
-    <artifactId>core</artifactId>
+    <groupId>org.jmatrix</groupId>
+    <artifactId>ed</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>core</name>
+    <name>ed</name>
     <url>http://maven.apache.org</url>
+
+    <modules>
+        <module>ed-core</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
