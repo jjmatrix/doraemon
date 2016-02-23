@@ -15,6 +15,7 @@
     <modules>
         <module>doraemon-core</module>
         <module>doraemon-web</module>
+        <module>doraemon-algorithm</module>
     </modules>
 
     <properties>
