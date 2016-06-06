@@ -1,4 +1,4 @@
-package org.jmatrx.utils;
+package org.jmatrix.core.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

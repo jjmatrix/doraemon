@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<aspectj>
+    <!--<weaver options="-debug -verbose -showWeaveInfo">-->
+    <weaver options="-debug -verbose -showWeaveInfo">
+        <include within="org.jmatrix..*"/>
+    </weaver>
+    <aspects>
+        <aspect name="org.jmatrix.core.aspectj.HttpClientAspect"/>
+    </aspects>
+</aspectj>
