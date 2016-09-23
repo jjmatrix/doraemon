@@ -1,17 +1,21 @@
 package org.jmatrix.cache;
 
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.jodah.concurrentunit.Waiter;
+import org.jmatrix.core.utils.NamedDaemonThreadFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.LockSupport;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -23,38 +27,27 @@ import static org.junit.Assert.assertThat;
  */
 public class GuavaCacheTest {
 
-    private LoadingCache<String, CacheEntry> loadingCache;
-
     private String testKey = "testKey";
-
-    private Map<String, CacheEntry> valueMap = new ConcurrentHashMap<>();
 
     @Before
     public void setUp() throws Exception {
-        valueMap.put(testKey, new CacheEntry("base", "base"));
-
-        loadingCache = CacheBuilder.newBuilder()
-                .concurrencyLevel(64)
-                .maximumSize(1000)
-                .expireAfterWrite(100, TimeUnit.MILLISECONDS)
-                .recordStats()
-                .build(new CacheLoader<String, CacheEntry>() {
-                    @Override
-                    public CacheEntry load(String key) throws Exception {
-                        if (valueMap.get(key) != null)
-                            return valueMap.get(key);
-
-                        return new CacheEntry("new", "new");
-                    }
-                });
     }
 
     @Test
     public void testLoadCacheObjectIsDeepCopy() throws Exception {
-        AtomicLong threadIdx = new AtomicLong(1);
-        ExecutorService executorService = Executors.newSingleThreadExecutor((runnable) ->
-                new Thread(runnable, "cacheLoader-" + threadIdx.getAndIncrement())
-        );
+        ExecutorService executorService = Executors.newSingleThreadExecutor(new NamedDaemonThreadFactory("-cacheLoad-"));
+
+        Map<String, CacheEntry> valueMap = new ConcurrentHashMap<>();
+        valueMap.put(testKey, new CacheEntry("base", "base"));
+        LoadingCache<String, CacheEntry> loadingCache = CacheFactory.Instance().createGuavaCache(new CacheLoader<String, CacheEntry>() {
+            @Override
+            public CacheEntry load(String key) throws Exception {
+                if (valueMap.get(key) != null)
+                    return valueMap.get(key);
+
+                return new CacheEntry("new", "new");
+            }
+        });
 
         CacheEntry baseCacheValue = loadingCache.get(testKey);
 
@@ -65,7 +58,7 @@ public class GuavaCacheTest {
         executorService.submit(() -> {
             try {
                 valueMap.clear();
-                Thread.sleep(200L);
+                Thread.sleep(2000L);
                 loadingCache.get(testKey);
             } catch (Exception e) {
 
@@ -78,6 +71,43 @@ public class GuavaCacheTest {
         CacheEntry reloadCacheValue = loadingCache.get(testKey);
 
         assertThat(baseCacheValue, not(reloadCacheValue));
+
+    }
+
+    @Test
+    public void testAsyncLoad_exclusive() throws Exception {
+
+        Waiter waiter = new Waiter();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(100, new NamedDaemonThreadFactory("-cache-exclusive-"));
+        AtomicLong loadCount = new AtomicLong(1);
+        LoadingCache<String, Long> loadingCache = CacheFactory.Instance().createGuavaCache(new CacheLoader<String, Long>() {
+            @Override
+            public Long load(String key) throws Exception {
+                LockSupport.parkNanos(1000 * 1000L);
+                return loadCount.getAndIncrement();
+            }
+        });
+
+        CountDownLatch latch = new CountDownLatch(2);
+        for (int i = 0; i < 100; i++) {
+            executorService.submit(() -> {
+                try {
+                    latch.countDown();
+                    latch.await();
+
+                    loadingCache.get("test");
+                    System.out.println(Thread.currentThread().getName());
+                } catch (InterruptedException | ExecutionException e) {
+
+                }
+            });
+        }
+
+        executorService.shutdown();
+        executorService.awaitTermination(120, TimeUnit.SECONDS);
+
+        assertThat(loadCount.get(), is(2L));
 
     }
 

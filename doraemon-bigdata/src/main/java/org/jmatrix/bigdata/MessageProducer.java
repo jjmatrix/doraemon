@@ -19,18 +19,23 @@ public class MessageProducer {
 
     private Logger logger = LoggerFactory.getLogger(MessageProducer.class);
 
+    private Properties properties = new Properties();
+
+    public void initialize() {
+        try {
+            InputStream inputStream = this.getClass().getResourceAsStream("/kafka.properties");
+            properties.load(inputStream);
+        } catch (Exception e) {
+            logger.error("load kafka config failed.", e);
+        }
+    }
+
     /**
      * produce message to kafka
      *
      * @param mSize message ratio
      */
     public void producerMessage(long mSize) {
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", "localhost:9092");
-        properties.put("acks", "all");
-        properties.put("retries", 0);
-        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer kafkaProducer = new KafkaProducer(properties);
 
         try (FileMessageList fileMessageList = new FileMessageList(this.getClass().getResourceAsStream("/messagelist.txt"))) {
@@ -181,5 +186,11 @@ public class MessageProducer {
         public void setValue(V value) {
             this.value = value;
         }
+    }
+
+    public static void main(String[] args) {
+        MessageProducer messageProducer = new MessageProducer();
+        messageProducer.initialize();
+        messageProducer.producerMessage(2);
     }
 }
