@@ -11,11 +11,20 @@
 
     <artifactId>doraemon-bigdata</artifactId>
 
+    <properties>
+        <amqp.version>4.0.0</amqp.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>0.10.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>${amqp.version}</version>
         </dependency>
     </dependencies>
 

@@ -16,13 +16,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <doraemon.cache.version>2.1.0-SNAPSHOT</doraemon.cache.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.jmatrix</groupId>
             <artifactId>doraemon-cache</artifactId>
-            <version>${project.version}</version>
+            <version>${doraemon.cache.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

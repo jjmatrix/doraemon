@@ -174,7 +174,7 @@ public class FalseSharing {
     }
 
     @Benchmark
-//    @Group("contended")
+    @Group("contended")
     public void writer(StateContended s) {
         s.writeOnly++;
     }

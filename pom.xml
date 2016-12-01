@@ -25,8 +25,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <uberjar.name>benchmarks</uberjar.name>
-        <jmh.version>1.11.3</jmh.version>
+        <jmh.version>1.15</jmh.version>
         <http.components.version>4.5.2</http.components.version>
+        <spring.version>4.3.1.RELEASE</spring.version>
     </properties>
 
     <repositories>
@@ -111,6 +112,16 @@
                 <artifactId>httpclient</artifactId>
                 <version>${http.components.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -156,7 +167,6 @@
         </dependency>
 
     </dependencies>
-
 
 
 </project>

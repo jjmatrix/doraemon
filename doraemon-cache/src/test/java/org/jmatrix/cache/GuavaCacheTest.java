@@ -32,7 +32,6 @@ public class GuavaCacheTest {
     @Before
     public void setUp() throws Exception {
     }
-
     @Test
     public void testLoadCacheObjectIsDeepCopy() throws Exception {
         ExecutorService executorService = Executors.newSingleThreadExecutor(new NamedDaemonThreadFactory("-cacheLoad-"));
