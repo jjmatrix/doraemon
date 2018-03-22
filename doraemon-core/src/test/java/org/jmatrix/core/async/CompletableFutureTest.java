@@ -1,6 +1,5 @@
 package org.jmatrix.core.async;
 
-import org.jmatrix.core.utils.NamedDaemonThreadFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,7 @@ public class CompletableFutureTest {
 
     @Before
     public void setUp() throws Exception {
-        executorService = Executors.newCachedThreadPool(new NamedDaemonThreadFactory("-completableFuture-test-"));
+        executorService = Executors.newCachedThreadPool();
     }
 
     @After

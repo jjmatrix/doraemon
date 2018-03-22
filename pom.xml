@@ -14,12 +14,13 @@
 
     <modules>
         <module>doraemon-core</module>
-        <module>doraemon-web</module>
         <module>doraemon-algorithm</module>
         <module>doraemon-cache</module>
         <module>doraemon-performance</module>
         <module>doraemon-shell</module>
         <module>doraemon-bigdata</module>
+        <module>doraemon-rpc</module>
+        <module>doraemon-spring</module>
     </modules>
 
     <properties>

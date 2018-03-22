@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.order.service";
+option java_outer_classname = "OrderProto";
+
+package order.service;
+
+service OrderService {
+    rpc query (OrderQueryRequest) returns (OrderQueryReply) {
+    }
+}
+
+message OrderQueryRequest {
+    string order_no = 1;
+}
+
+message OrderQueryReply {
+    string order_no = 1;
+    string name = 2;
+    int64 price = 3;
+    string desc = 4;
+}

@@ -4,8 +4,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.yahoo.ycsb.generator.NumberGenerator;
-import com.yahoo.ycsb.generator.ScrambledZipfianGenerator;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -59,11 +57,11 @@ public class GetPutAsyncBenchmark {
         }
         loadingCache.cleanUp();
 
-        NumberGenerator generator = new ScrambledZipfianGenerator(ITEMS);
-        for (int i = 0; i < SIZE; i++) {
-            ints[i] = generator.nextValue().intValue();
-            loadingCache.put(ints[i], Boolean.TRUE);
-        }
+//        NumberGenerator generator = new ScrambledZipfianGenerator(ITEMS);
+//        for (int i = 0; i < SIZE; i++) {
+//            ints[i] = generator.nextValue().intValue();
+//            loadingCache.put(ints[i], Boolean.TRUE);
+//        }
 
     }
 
